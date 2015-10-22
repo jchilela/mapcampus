@@ -4,24 +4,30 @@ from django.db import models
 #We need to have informations about the person who is inserting, updating or deleting objects in database(Buildings,  sensors, conditional air, ect)
 class Users(Models.model):
 	Name = models.CharField(max_lenght=100)
-	UserName = models.CharField(max_lenght = 100)
-	Password = models.CharField(max_lenght = 100)
+	UserName = models.CharField(max_lenght = 100,null=True,blank=True)
+	Password = models.CharField(max_lenght = 100,null=True,blank=True)
 	def __unicode__(self):
 		return unicode(self.UserId)
 
 # Every objects will be in the same table (Buildings, Sensors, Conditional air and others objects that we can manipulate by CLICKING) 
 class Objects(Models.model):
-	objectId= models.CharField(max_lenght = 45)
-	Type = models.CharField(max_lenght = 50)
-	Name = models.CharField(max_lenght = 300)
-	Description = models.CharField(max_lenght=5000)
-	url = models.CharField(max_lenght=100,null=true,blank=true)
-	Color = models.CharField(max_lenght = 45)
-	Value = models.FloatField()
-	Date = models.DataTimeField()
+	objectId= models.CharField(max_lenght = 45,null=True,blank=True)
+	Type = models.CharField(max_lenght = 50,null=True,blank=True)
+	Name = models.CharField(max_lenght = 300,null=True,blank=True)
+	Description = models.CharField(max_lenght=5000,null=True,blank=True)
+	url = models.CharField(max_lenght=100,null=True,blank=True)
+	Value = models.FloatField(null=True,blank=True)
+	Date = models.DataTimeField(null=True,blank=True)
 	UserId = models.ForeignKey(Users)
-	Picture = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True)
-	Password = models.CharField(max_lenght = 45) #TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
+	Password = models.CharField(max_lenght = 45,null=True,blank=True) #TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
+	Floors = models.IntegerField(null=True,blank=True) # To use in pop-up of the object
+	#As Entity.
+	PositionLat = models.FloatField(null=True,blank=True)
+	PositionLong = models.FloatField(null=True,blank=True)
+	Picture = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) #Pop-Up image
+	MaterialImage = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) # Material image
+	MaterialColor = models.CharField(max_lenght = 45,null=True,blank=True)
+
 	def __unicode__(self):
 		return unicode(self.CodObject)
 
@@ -31,14 +37,14 @@ class Objects(Models.model):
 # Will be possible to define which camera is default. We will have 3 global camera(Code 1,100,100) One of them will be the pre-defined
 class Camera(Models.model):
 	CodObject = models.ForeignKey(Objects)
-	Latitude = models.FloatField()
-	Longitude = models.FloatField()
-	Altitude = models.FloatField()
-	Heading = models.FloatField()
-	Pitch = models.FloatField()
-	Roll = models.FloatField()
-	Date = models.DataTimeField()
-	Default = models.NullBooleanField()
+	Latitude = models.FloatField(null=True,blank=True)
+	Longitude = models.FloatField(null=True,blank=True)
+	Altitude = models.FloatField(null=True,blank=True)
+	Heading = models.FloatField(null=True,blank=True)
+	Pitch = models.FloatField(null=True,blank=True)
+	Roll = models.FloatField(null=True,blank=True)
+	Date = models.DataTimeField(null=True,blank=True)
+	Default = models.NullBooleanField(null=True,blank=True) #Default camera when we open the map for the first time
 	def __unicode__(self):
 		return unicode(self.CodCamera)
 
@@ -46,30 +52,42 @@ class Camera(Models.model):
 # The altitude is not very important.
 class Coordenates(Models.model):
 	CodObject = models.ForeignKey(Objects)
-	Latitude = models.FloatField()
-	Longitude = models.FloatField()
-	Altitude = models.FloatField()
-	Extrude = models.FloatField()
-	Date = models.DataTimeField()
+	Latitude = models.FloatField(null=True,blank=True)
+	Longitude = models.FloatField(null=True,blank=True)
+	Altitude = models.FloatField(null=True,blank=True)
+	Extrude = models.FloatField(null=True,blank=True)
+	Date = models.DataTimeField(null=True,blank=True)
 	def __unicode__(self):
 		return unicode(self.CodCoordinate)
 
 # We will need to know who is the user that is making changes in the databese(date,time, hour and which change he performed)
 class InsertDeleteUpdate(Models.model):
-	IdObject = models.BigIntegerField()
-	UserId = models.BigIntegerField()
-	PerformedActivity = models.CharField()
-	Date = models.DataTimeField()
+	IdObject = models.BigIntegerField(null=True,blank=True)
+	UserId = models.BigIntegerField(null=True,blank=True)
+	PerformedActivity = models.CharField(max_lenght = 50,null=True,blank=True)
+	Date = models.DataTimeField(null=True,blank=True)
 	def __unicode__(self):
 		return unicode(self.IdObject)
 
 #This table will save all login informations for raspberryPi that we have in network. For easy SSH Connection
-class Servers(Model.models):
+class Servers(Models.model):
 	CodServer = models.ForeignKey(Objects)
-	Ip = models.CharField()
-	UserName = models.CharField()
-	Password = models.CharField()
-	Port = models.IntegerField()
+	Ip = models.CharField(max_lenght = 45,null=True,blank=True)
+	UserName = models.CharField(max_lenght = 45,null=True,blank=True)
+	Password = models.CharField(max_lenght = 45,null=True,blank=True)
+	Port = models.IntegerField(null=True,blank=True)
+	Date = models.DataTimeField(null=True,blank=True)
+	def __unicode__(self):
+		return unicode(self.CodServer)
+
+#Default configurations. First map
+class MapSettings(Models.model):
+	ImageryProvider = models.CharField(null=True,blank=True)
+	Url = models.CharField(null=True,blank=True)
+	BaseLayerPick = models.NullBooleanField()
+	def __unicode__(self):
+		return unicode(self.ImageryProvider)
+
 
 
 
