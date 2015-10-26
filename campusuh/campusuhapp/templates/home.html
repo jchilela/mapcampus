@@ -1,0 +1,102 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Home</title>
+  <script src="{% static 'js/Cesium.js' %}"></script>
+  <style>
+      @import url({% static 'css/widgets.css' %});
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+
+
+  //EXERCISE 2 
+ 
+  //var viewer = new Cesium.Viewer('cesiumContainer');
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    imageryProvider : new Cesium.OpenStreetMapImageryProvider({
+    url : '//a.tile.openstreetmap.org/'
+        }),
+    baseLayerPicker : false
+});
+viewer.camera.flyTo({
+        destination : Cesium.Cartesian3.fromDegrees(-95.3437, 29.7179, 800.0),
+        orientation : {
+            heading : Cesium.Math.toRadians(20.0),
+            pitch : Cesium.Math.toRadians(-60.0),
+            roll : 0.0
+        }
+    });
+
+
+//Add the build 
+var entity = viewer.entities.add({
+    position : Cesium.Cartesian3.fromDegrees(-95.34323, 29.72216),
+    model : {
+        uri : "{% static 'css/COT.bgltf' %}"
+    }});
+
+
+var wyoming = viewer.entities.add({
+  name : 'Wyoming',
+  polygon : {
+    hierarchy : Cesium.Cartesian3.fromDegreesArray([
+                             -95.34084,29.72322,
+     -95.34074, 29.72348,
+      -95.34150, 29.72371,
+      -95.34161, 29.72345
+                             ]),
+    //material : "{% static 'css/img/a.jpg' %}",
+    outline : true,
+    outlineColor : Cesium.Color.BLACK
+  }
+});
+
+wyoming.polygon.extrudedHeight = 50;
+
+
+
+//viewer.position = Cesium.Cartesian3.fromDegrees(-95.34154, 29.72331, 15000.0)//Cesium.Cartesian3.fromDegrees(-107.724, 42.68, 110.0);
+viewer.trackedEntity = wyoming;
+wyoming.description = '\
+<img\
+  width="50%"\
+  style="float:left; margin: 0 1em 1em 0;"\
+  src="{% static 'css/a.jpg' %}"/>\
+<p>\
+  Wyoming is a state in the mountain region of the Western \
+  United States.\
+</p>\
+<p>\
+  Wyoming is the 10th most extensive, but the least populous \
+  and the second least densely populated of the 50 United \
+  States. The western two thirds of the state is covered mostly \
+  with the mountain ranges and rangelands in the foothills of \
+  the eastern Rocky Mountains, while the eastern third of the \
+  state is high elevation prairie known as the High Plains. \
+  Cheyenne is the capital and the most populous city in Wyoming, \
+  with a population estimate of 62,448 in 2013.\
+</p>\
+<p>\
+  Source: \
+  <a style="color: WHITE"\
+    target="_blank"\
+    href="http://en.wikipedia.org/wiki/Wyoming">Wikpedia</a>';
+
+
+
+  </script>
+</body>
+</html>
