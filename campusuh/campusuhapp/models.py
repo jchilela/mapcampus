@@ -2,20 +2,24 @@ from django.db import models
 
 # Create your models here
 #We need to have informations about the person who is inserting, updating or deleting objects in database(Buildings,  sensors, conditional air, ect)
+class ObjectsType(models.Model):
+	TypeObj = models.CharField(max_length = 50,null=True,blank=True)
+	def __unicode__(self):
+		return unicode(self.TypeObj)
+
 class Users(models.Model):
 	Name = models.CharField(max_length=100)
 	UserName = models.CharField(max_length = 100,null=True,blank=True)
 	Password = models.CharField(max_length = 100,null=True,blank=True)
 	def __unicode__(self):
-		return unicode(self.UserId)
+		return unicode(self.Name)
 
 # Every objects will be in the same table (Buildings, Sensors, Conditional air and others objects that we can manipulate by CLICKING) 
 class Objects(models.Model):
-	objectId= models.CharField(max_length = 45,null=True,blank=True)
-	Type = models.CharField(max_length = 50,null=True,blank=True)
+	TypeObj = models.ForeignKey(ObjectsType)
 	Name = models.CharField(max_length = 300,null=True,blank=True)
 	Description = models.CharField(max_length=5000,null=True,blank=True)
-	url = models.CharField(max_length=100,null=True,blank=True)
+	url = models.FileField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True)
 	Value = models.FloatField(null=True,blank=True)
 	Date = models.DateTimeField(null=True,blank=True)
 	UserId = models.ForeignKey(Users)
@@ -29,7 +33,7 @@ class Objects(models.Model):
 	MaterialColor = models.CharField(max_length = 45,null=True,blank=True)
 
 	def __unicode__(self):
-		return unicode(self.CodObject)
+		return unicode(self.Name)
 
 
 
@@ -40,7 +44,7 @@ class Camera(models.Model):
 	Latitude = models.FloatField(null=True,blank=True)
 	Longitude = models.FloatField(null=True,blank=True)
 	Altitude = models.FloatField(null=True,blank=True)
-	Heading = models.FloatField(null=True,blank=True)
+	yaw = models.FloatField(null=True,blank=True)
 	Pitch = models.FloatField(null=True,blank=True)
 	Roll = models.FloatField(null=True,blank=True)
 	Date = models.DateTimeField(null=True,blank=True)

@@ -8,7 +8,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-  <title>Home</title>
+  <title>{{obje.Description}}</title>
+  
   <script src="{% static 'js/Cesium.js' %}"></script>
   <style>
       @import url({% static 'css/widgets.css' %});
@@ -42,13 +43,15 @@ viewer.camera.flyTo({
 
 
 //Add the build 
+  {%for obje in obje%}
+
 var entity = viewer.entities.add({
-    position : Cesium.Cartesian3.fromDegrees(-95.34323, 29.72216),
+    position : Cesium.Cartesian3.fromDegrees(parseFloat('{{obje.PositionLong}}'.replace(",",".")) , parseFloat('{{obje.PositionLat}}'.replace(",","."))),
     model : {
-        uri : "{% static 'css/COT.bgltf' %}"
+        uri : "/media/{{obje.url}}"
     }});
 
-
+{%endfor%}
 var wyoming = viewer.entities.add({
   name : 'Wyoming',
   polygon : {
