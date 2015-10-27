@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgis',
-        'USER': 'user',
-        'PASSWORD': 'user',
+        'USER': 'postgis',
+        'PASSWORD': 'postgis',
         'HOST':'localhost',
         'PORT':'5432',
     }
