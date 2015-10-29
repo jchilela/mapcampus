@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgis',
-        'USER': 'postgis',
-        'PASSWORD': 'postgis',
+        'USER': 'user',
+        'PASSWORD': 'user',
         'HOST':'localhost',
         'PORT':'5432',
     }
@@ -100,6 +100,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
