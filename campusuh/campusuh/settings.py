@@ -87,6 +87,26 @@ DATABASES = {
     }
 }
 
+# Internationalization
+# https://docs.djangoproject.com/en/1.8/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.8/howto/static-files/
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+"""
 STATICFILES_DIRS = [
     "/usr/local/lib/python2.7/dist-packages/django/contrib/admin/static"
     "/home/ubuntu/websites/estagio/mapcampus/campusuh/campusuhapp/static",
@@ -115,4 +135,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, '/media')
-                                                    
+                                                  """
+
