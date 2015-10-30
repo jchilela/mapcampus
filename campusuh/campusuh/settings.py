@@ -87,6 +87,14 @@ DATABASES = {
     }
 }
 
+STATICFILES_DIRS = [
+    "/usr/local/lib/python2.7/dist-packages/django/contrib/admin/static"
+    "/home/ubuntu/websites/estagio/mapcampus/campusuh/campusuhapp/static",
+    "/home/ubuntu/websites/estagio/mapcampus/campusuh/campusuhapp/static/media",
+    "/home/ubuntu/websites/estagio/mapcampus/campusuh/campusuh",
+]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -105,7 +113,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, '/media')
+                                                    
