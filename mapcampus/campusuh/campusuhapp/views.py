@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db import connection
-from .models import ObjectsType,Users,Objects,Camera,Coordenates,InsertDeleteUpdate,Servers,MapSettings
+from .models import ObjectsType,Users,Objects,Camera,ObjectsCoordenates,Servers,MapSettings,Buildings,Floors,Rooms,FloorsCoordinates,RoomsCoordinates
+
 
 # Create your views here.
 
@@ -10,7 +11,7 @@ def dictfetchall(cursor):
 
 def get_all_objects():
 	con = connection.cursor()
-	con.execute('select * from campusuhapp_Objects')
+	con.execute('select * from campusuhapp_Buildings')
 	return dictfetchall(con)
 
 def home(request):
