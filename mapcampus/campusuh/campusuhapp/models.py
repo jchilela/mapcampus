@@ -21,7 +21,6 @@ class Objects(models.Model):
 	Description = models.CharField(max_length=5000,null=True,blank=True)
 	url = models.FileField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True)
 	Value = models.FloatField(null=True,blank=True)
-	Date = models.DateTimeField(null=True,blank=True)
 	UserId = models.ForeignKey(Users)
 	Password = models.CharField(max_length = 45,null=True,blank=True) #TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
 	Floors = models.IntegerField(null=True,blank=True) # To use in pop-up of the object
@@ -31,6 +30,8 @@ class Objects(models.Model):
 	Picture = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) #Pop-Up image
 	MaterialImage = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) # Material image
 	MaterialColor = models.CharField(max_length = 45,null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
+	
 
 	def __unicode__(self):
 		return unicode(self.Name)
@@ -47,20 +48,20 @@ class Camera(models.Model):
 	yaw = models.FloatField(null=True,blank=True)
 	Pitch = models.FloatField(null=True,blank=True)
 	Roll = models.FloatField(null=True,blank=True)
-	Date = models.DateTimeField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
 	Default = models.NullBooleanField(null=True,blank=True) #Default camera when we open the map for the first time
 	def __unicode__(self):
 		return unicode(self.CodCamera)
 
 #This table saves the objects coordinates. If we have one object in form of square, we will need 4 points to complete the object design. Each point is made by 2 numbers(Lat,Long) (Graph theory).
 # The altitude is not very important.
-class Coordenates(models.Model):
+class ObjectsCoordenates(models.Model):
 	CodObject = models.ForeignKey(Objects)
 	Latitude = models.FloatField(null=True,blank=True)
 	Longitude = models.FloatField(null=True,blank=True)
 	Altitude = models.FloatField(null=True,blank=True)
 	Extrude = models.FloatField(null=True,blank=True)
-	Date = models.DateTimeField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
 	def __unicode__(self):
 		return unicode(self.CodCoordinate)
 
@@ -69,7 +70,7 @@ class InsertDeleteUpdate(models.Model):
 	IdObject = models.BigIntegerField(null=True,blank=True)
 	UserId = models.BigIntegerField(null=True,blank=True)
 	PerformedActivity = models.CharField(max_length = 50,null=True,blank=True)
-	Date = models.DateTimeField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
 	def __unicode__(self):
 		return unicode(self.IdObject)
 
@@ -80,7 +81,7 @@ class Servers(models.Model):
 	UserName = models.CharField(max_length = 45,null=True,blank=True)
 	Password = models.CharField(max_length = 45,null=True,blank=True)
 	Port = models.IntegerField(null=True,blank=True)
-	Date = models.DateTimeField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
 	def __unicode__(self):
 		return unicode(self.CodServer)
 
@@ -91,6 +92,96 @@ class MapSettings(models.Model):
 	BaseLayerPick = models.NullBooleanField()
 	def __unicode__(self):
 		return unicode(self.ImageryProvider)
+
+
+# Just buldings in this table
+class Buildings(models.Model):
+	Name = models.CharField(max_length = 300,null=True,blank=True)
+	Description = models.CharField(max_length=5000,null=True,blank=True)
+	url = models.FileField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True)
+	Value = models.FloatField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
+	UserId = models.ForeignKey(Users)
+	Password = models.CharField(max_length = 45,null=True,blank=True) #TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
+	Floors = models.IntegerField(null=True,blank=True) # To use in pop-up of the object
+	#As Entity.
+	PositionLat = models.FloatField(null=True,blank=True)
+	PositionLong = models.FloatField(null=True,blank=True)
+	Picture = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) #Pop-Up image
+	MaterialImage = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) # Material image
+	MaterialColor = models.CharField(max_length = 45,null=True,blank=True)
+
+	def __unicode__(self):
+		return unicode(self.Name)
+
+
+#TblFloors represent the building floors. Every floor is part of one building
+class Floors(models.Model):
+	codBuilding = models.ForeignKey(Buildings)
+	FloorName= models.CharField(max_length=50)
+	Description = models.CharField(max_length=5000,null=True,blank=True)
+	Password = models.CharField(max_length = 45,null=True,blank=True) #TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
+	#As Entity.
+	PositionLat = models.FloatField(null=True,blank=True)
+	PositionLong = models.FloatField(null=True,blank=True)
+	Picture = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) #Pop-Up image
+	MaterialImage = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) # Material image
+	MaterialColor = models.CharField(max_length = 45,null=True,blank=True)
+	UserId = models.ForeignKey(Users)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
+	def __unicode__(self):
+		return unicode(self.FloorName)
+
+#Rooms represent the rooms. Every room is part of one floor
+class Rooms(models.Model):
+	codBuilding = models.ForeignKey(Buildings)
+	codBuilding = models.ForeignKey(Floors)
+	RoomName= models.CharField(max_length=50)
+	Description = models.CharField(max_length=5000,null=True,blank=True)
+	url = models.FileField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True)
+	Password = models.CharField(max_length = 45,null=True,blank=True) #TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
+	#As Entity.
+	PositionLat = models.FloatField(null=True,blank=True)
+	PositionLong = models.FloatField(null=True,blank=True)
+	Picture = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) #Pop-Up image
+	MaterialImage = models.ImageField(upload_to = 'fotos/%Y/%m/%d',null=True,blank=True) # Material image
+	MaterialColor = models.CharField(max_length = 45,null=True,blank=True)
+	UserId = models.ForeignKey(Users)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
+	def __unicode__(self):
+		return unicode(self.RoomName)
+#Each floor has a lot os coordinates that are a part of them. we need the coordinates to design the floor
+class FloorsCoordinates(models.Model):
+	Building = models.ForeignKey(Buildings)
+	Floor = models.ForeignKey(Floors)
+	Latitude = models.FloatField(null=True,blank=True)
+	Longitude = models.FloatField(null=True,blank=True)
+	Altitude = models.FloatField(null=True,blank=True)
+	Extrude = models.FloatField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
+	def __unicode__(self):
+		return unicode(self.CodFloors)
+
+#Every floor has rooms
+class RoomsCoordinates(models.Model):
+	Building = models.ForeignKey(Buildings)
+	Floor = models.ForeignKey(Floors)
+	RoomName = models.ForeignKey(Rooms)
+	Latitude = models.FloatField(null=True,blank=True)
+	Longitude = models.FloatField(null=True,blank=True)
+	Altitude = models.FloatField(null=True,blank=True)
+	Extrude = models.FloatField(null=True,blank=True)
+	Date = models.DateTimeField(auto_now_add=True,blank=True)
+	def __unicode__(self):
+		return unicode(self.CodFloors)
+
+
+
+
+
+
+
+
 
 
 
