@@ -160,7 +160,7 @@ class FloorsCoordinates(models.Model):
 	Extrude = models.FloatField(null=True,blank=True)
 	Date = models.DateTimeField(auto_now_add=True,blank=True)
 	def __unicode__(self):
-		return unicode(self.CodFloors)
+		return unicode(self.Floor)
 
 #Every floor has rooms
 class RoomsCoordinates(models.Model):

@@ -23,9 +23,8 @@
   <script>
 
 
-  //EXERCISE 2 
  
-  //var viewer = new Cesium.Viewer('cesiumContainer');
+  //Using openstreetmap as tiled map
 var viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider : new Cesium.OpenStreetMapImageryProvider({
     url : '//a.tile.openstreetmap.org/'
@@ -42,17 +41,42 @@ viewer.camera.flyTo({
     });
 
 
-//Add the build 
-  {%for obje in obje%}
+//Add all buildings in the map
+  {%for building in building%}
+  var str1 = 'ab';
+  var str2 = '{{building.id}}';
+var buildingID = str1.concat(str2);
+//alert('ab' + str2);
 
-var entity = viewer.entities.add({
-    position : Cesium.Cartesian3.fromDegrees(parseFloat('{{obje.PositionLong}}'.replace(",",".")) , parseFloat('{{obje.PositionLat}}'.replace(",","."))),
+window["ab" + str2] =  viewer.entities.add({
+    name : '{{building.Name}}',
+    position : Cesium.Cartesian3.fromDegrees(parseFloat('{{building.PositionLong}}'.replace(",",".")) , parseFloat('{{building.PositionLat}}'.replace(",","."))),
     model : {
-        uri : "/media/{{obje.url}}"
+        uri : "/media/{{building.url}}"
     }});
 
+
+viewer.trackedEntity = window["ab" + str2];
+window["ab" + str2].description = '\
+<img\
+  width="50%"\
+  style="float:left; margin: 0 1em 1em 0;"\
+  src="/media/{{building.MaterialImage}}"/>\
+<p>\
+  {{building.Name}} \
+</p>\
+<p>\
+  {{building.Description}} \
+</p>\
+<p>\
+  Source: \
+  <a style="color: WHITE"\
+    target="_blank"\
+    href="http://en.wikipedia.org/wiki/Wyoming">Wikpedia</a>';
+
 {%endfor%}
-var wyoming = viewer.entities.add({
+
+/*var wyoming = viewer.entities.add({
   name : 'Wyoming',
   polygon : {
     hierarchy : Cesium.Cartesian3.fromDegreesArray([
@@ -67,37 +91,19 @@ var wyoming = viewer.entities.add({
   }
 });
 
-wyoming.polygon.extrudedHeight = 50;
+wyoming.polygon.extrudedHeight = 50;*/
+
+
+//Setting up the pop-up when we click in the building
 
 
 
-//viewer.position = Cesium.Cartesian3.fromDegrees(-95.34154, 29.72331, 15000.0)//Cesium.Cartesian3.fromDegrees(-107.724, 42.68, 110.0);
-viewer.trackedEntity = wyoming;
-wyoming.description = '\
-<img\
-  width="50%"\
-  style="float:left; margin: 0 1em 1em 0;"\
-  src="{% static 'css/a.jpg' %}"/>\
-<p>\
-  Wyoming is a state in the mountain region of the Western \
-  United States.\
-</p>\
-<p>\
-  Wyoming is the 10th most extensive, but the least populous \
-  and the second least densely populated of the 50 United \
-  States. The western two thirds of the state is covered mostly \
-  with the mountain ranges and rangelands in the foothills of \
-  the eastern Rocky Mountains, while the eastern third of the \
-  state is high elevation prairie known as the High Plains. \
-  Cheyenne is the capital and the most populous city in Wyoming, \
-  with a population estimate of 62,448 in 2013.\
-</p>\
-<p>\
-  Source: \
-  <a style="color: WHITE"\
-    target="_blank"\
-    href="http://en.wikipedia.org/wiki/Wyoming">Wikpedia</a>';
-
+/*eval('var ab' + str2 + ' = ' + viewer.entities.add({
+    name : '{{building.Name}}',
+    position : Cesium.Cartesian3.fromDegrees(parseFloat('{{building.PositionLong}}'.replace(",",".")) , parseFloat('{{building.PositionLat}}'.replace(",","."))),
+    model : {
+        uri : "/media/{{building.url}}"
+    }})); */
 
 
   </script>
