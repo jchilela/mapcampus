@@ -32,6 +32,39 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
         }),
     baseLayerPicker : false
 });
+
+    var wyoming = viewer.entities.add({
+  name : 'Wyoming',
+  polygon : {
+    hierarchy : Cesium.Cartesian3.fromDegreesArray([
+                              -109.080842,45.002073,
+                              -105.91517,45.002073,
+                              -104.058488,44.996596,
+                              -104.053011,43.002989,
+                              -104.053011,41.003906,
+                              -105.728954,40.998429,
+                              -107.919731,41.003906,
+                              -109.04798,40.998429,
+                              -111.047063,40.998429,
+                              -111.047063,42.000709,
+                              -111.047063,44.476286,
+                              -111.05254,45.002073]),
+    material : Cesium.Color.RED.withAlpha(0.5),
+    outline : true,
+    outlineColor : Cesium.Color.BLACK
+  }
+});
+var ellipse = wyoming.polygon;
+ellipse.material = "{% static 'css/img/a.jpg' %}";
+
+viewer.zoomTo(wyoming);
+ellipse.polygon.extrudedHeight = 50;
+
+
+
+
+
+/*
 viewer.camera.flyTo({
         destination : Cesium.Cartesian3.fromDegrees(-95.3437, 29.7179, 800.0),
         orientation : {
@@ -74,7 +107,7 @@ window["ab" + str2].description = '\
   <a style="color: WHITE"\
     target="_blank"\
    <ul>' {% for count in building.Floors|times %}
-    + '<li><a href="/floors?buildingid={{building.id}}&floorNumber={{ forloop.counter }} {# starting index 1 #}" target="_top">Floor {{ forloop.counter }} {# starting index 1 #} </a></li>\
+    + '<li><a href="/floor?buildingid={{building.id}}&codFloor={{ forloop.counter }} {# starting index 1 #}" target="_top">Floor {{ forloop.counter }} {# starting index 1 #} </a></li>\
   '  {% endfor %} + 
   '</ul><p>\
 </p>\

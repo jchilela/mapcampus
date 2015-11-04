@@ -7,6 +7,8 @@ from django.views.generic import RedirectView
 urlpatterns = [
     # Examples:
     url(r'^$', 'campusuhapp.views.home', name='home'),
+    url(r'^floors', 'campusuhapp.views.floors', name='floors'),
+
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
