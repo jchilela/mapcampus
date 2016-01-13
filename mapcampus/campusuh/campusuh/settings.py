@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+#import smart_selects
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 
@@ -27,8 +27,8 @@ SECRET_KEY = '(bt=@e*7o-x&**270e7uiy7ll=3=gzm*$63t$t333uak_%v)qy'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
+USE_DJANGO_JQUERY = False
+ADMIN_MEDIA_PREFIX='/static/'
 # Application definition
 
 INSTALLED_APPS = (
@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'django.contrib.gis',
+    'smart_selects',
     'campusuhapp'
 )
 
@@ -82,12 +83,13 @@ WSGI_APPLICATION = 'campusuh.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'postgis',
         'USER': 'user',
         'PASSWORD': 'user',
         'HOST':'localhost',
-        'PORT':'5432',
+        'PORT':'5433',
     }
 }
 

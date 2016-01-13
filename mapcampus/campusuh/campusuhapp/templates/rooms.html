@@ -1,0 +1,151 @@
+{% load staticfiles %}
+{% load my_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>3d maps</title>
+  
+  <script src="{% static 'js/Cesium.js' %}"></script>
+  <style>
+      @import url({% static 'css/widgets.css' %});
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body onload="ShowBuilding();">
+  <div id="cesiumContainer"></div>
+  <div id="controlPanel">
+  <center><font size="4" color="white"> Quick menu</font></center><br/>
+  <p> 
+   <label> 
+    <p><button class="cesium-button" onclick="GoHome();">Home</button></p>
+    <button class="cesium-button" onclick="AdvancedSearch();">Advanced Search</button>
+  </p>
+</div>
+
+  <script>
+
+  //Using openstreetmap as tiled map
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    imageryProvider : new Cesium.OpenStreetMapImageryProvider({
+    url : '//a.tile.openstreetmap.org/'
+        }),
+    baseLayerPicker : false,
+    animation: false,
+    timeline:false
+});
+                           
+                      {%for Objec in Objects%}
+                      var descriptions='{{Objec.Description}}';
+                      var ip = '{{Objec.Ip}}';
+                      var user = '{{Objec.UserName}}';
+                      var pass = '{{Objec.Password}}';
+                      var port = '{{Objec.Port}}';
+                      var id = '{{Objec.id}}';
+
+
+
+
+
+ var entity = viewer.entities.add({
+        name : '{{Objec.Name}}',
+        position : Cesium.Cartesian3.fromDegrees(parseFloat('{{Objec.x}}') , parseFloat('{{Objec.y}}')),
+        billboard : {
+            image : "/media/{{Objec.Picture}}", // default: undefined
+            show : true, // default
+            pixelOffset : new Cesium.Cartesian2(0, -50), // default: (0, 0)
+            eyeOffset : new Cesium.Cartesian3(0.0, 0.0, 0.0), // default
+            horizontalOrigin : Cesium.HorizontalOrigin.CENTER, // default
+            verticalOrigin : Cesium.VerticalOrigin.BOTTOM, // default: CENTER
+            scale : 2.0, // default: 1.0
+            color : Cesium.Color.WHITE, // default: WHITE
+            rotation : Cesium.Math.PI_OVER_FOUR, // default: 0.0
+            alignedAxis : Cesium.Cartesian3.ZERO, // default
+            width : 50, // default: undefined
+            height : 25 // default: undefined
+        }
+        //billboard : {
+        //    image : "/media/{{Objec.Picture}}",
+        //}
+    });
+
+ entity.description = '\
+<p>\
+  ' + descriptions + ' \
+</p>\
+  <a style="color: WHITE"\
+    target="_blank"\
+</p>\
+<p>\
+<p>\
+<p>\
+</p>\
+<a href="http://' + ip +'/" target="_top">Open Camera</a>\
+<p>\
+</p>\
+<a href="chrome-extension://pnhechapfaindjhompbnflcldabbghjo/html/nassh.html?ip=' + ip + ';user=' + user + ';password=' + pass + ';port='+ port +'" target="_top">Open the SSH Window</a>\
+<p>\
+</p>\
+<a href="http://172.26.56.84/" target="_top">Device Control</a>\
+<p>\
+</p>\
+<a href="/graphics?DeviceID='+ id +'" target="_top">Graphics</a>\
+</p>\
+<p>\
+</p>\
+<p>\
+</p>\
+<p>\
+</p>';
+viewer.infoBox.frame.removeAttribute('sandbox');
+
+ 
+ {%endfor%}
+
+var heading = Cesium.Math.toRadians(90);
+var pitch = Cesium.Math.toRadians(-40);
+viewer.zoomTo(entity, new Cesium.HeadingPitchRange(heading, pitch,80));
+
+
+
+function GoHome(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/");
+}
+function AS(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/advancedsearch");
+}
+
+
+
+  </script>
+  <style type="text/css">
+
+#controlPanel {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: rgba(42, 42, 42, 0.8);
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+
+
+label {
+  cursor: pointer;
+}
+label:hover span {
+  text-decoration: underline;
+}
+
+  </style>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+<iframe src="chrome-extension://pnhechapfaindjhompbnflcldabbghjo/html/nassh.html" name="google" style="height:100px"></iframe>
+<script>
+  // set onload on element
+  document.getElementsByTagName('iframe')[0].onload = function() {
+    alert('Frame element loaded')
+  }
+  // set onload on window
+  frames[0].onload = function() {
+    alert('Window loaded')
+  }
+</script>
+
+</body>
+</html>

@@ -10,55 +10,205 @@
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>3d maps</title>
-  
+   <script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
   <script src="{% static 'js/Cesium.js' %}"></script>
   <style>
       @import url({% static 'css/widgets.css' %});
+      @import url({% static 'css/home/bootstrap.min.css' %});
+      @import url({% static 'css/home/modern-business.css' %});
+      @import url({% static 'css/home/font-awesome/css/font-awesome.min.css' %});
+
+
       html, body, #cesiumContainer {
           width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
       }
   </style>
 </head>
-<body>
+<body onload="ShowBuilding();">
   <div id="cesiumContainer"></div>
+
+<div id="controlPanel">
+  <!-- {%if forloop.first %}
+        <p><span>{{objects.TypeObj}}</span><input id="skyCheckbox{{objects.id}}" type="checkbox" checked/> 
+          {%endif%} -->
+  <center><font size="4" color="white"> Quick menu</font></center><br/>
+   <label> 
+    <p><button id="home" class="cesium-button" onclick="GoHome();">Home</button></p>
+    <p><button id="scat" class="cesium-button" onclick="SCat();">See Info Categorized</button></p>
+    <p><button id="dd" class="cesium-button" onclick="DD();">Devices Damaged</button></p>  <!--  It will show devices that are not
+    sending data to the website about 20 min -->
+    <p><button id="pt" class="cesium-button" onclick="PT();">Public Transportation</button></p>
+    <p><button id="pt" class="cesium-button" onclick="PT();">Public Informations</button></p>
+    <p><button id="pt" class="cesium-button" onclick="PT();">Public Complaints</button></p>
+    <p><button id="pt" class="cesium-button" onclick="GD();">Graphics Dashboards</button></p>
+
+    <p><button id="as" class="cesium-button" onclick="AS();">Advanced Search</button></p>
+
+  </p>
+</div>
+
+
+
+
   <script>
 
-
- 
   //Using openstreetmap as tiled map
 var viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider : new Cesium.OpenStreetMapImageryProvider({
     url : '//a.tile.openstreetmap.org/'
         }),
-    baseLayerPicker : false
+    baseLayerPicker : false,
+    timeline: false,
+    animation: false
 });
+                           
 
-    var wyoming = viewer.entities.add({
-  name : 'Wyoming',
+
+
+
+var materiall = Cesium.Color.RED.withAlpha(0.5);
+var count =0;
+{%for coordesfinal1 in coordesfinal%}
+ var str1='';
+  var str2='';
+  var roomID = '';
+  var roomname='';
+    var lat = '';
+    var lon = '';
+
+            {%for coordes in coordesfinal1%}
+               str1 = 'ab';
+                str2 = '{{coordes.id}}';
+               roomID = str1.concat(str2);
+               roomname='{{coordes.RoomName}}'
+               lat = '{{coordes.latitude}}';
+               lon = '{{coordes.longitude}}';
+
+
+
+
+//alert('ab' + str2);
+           {% endfor %}
+
+
+window["ab" + str2] = viewer.entities.add({
+        name : roomname,
+        polygon : {
+          hierarchy : Cesium.Cartesian3.fromDegreesArray([
+                      {%for coordes in coordesfinal1%}
+                parseFloat('{{coordes.longitude}}') , parseFloat('{{coordes.latitude}}'),
+                        {% endfor %}
+                        ]),
+          material : materiall,
+          outline : true,
+          outlineColor : Cesium.Color.BLACK
+        }
+      });
+if (count == 0) {
+    materiall = Cesium.Color.BLUE.withAlpha(0.5);
+    count = count + 1;
+} else {
+    materiall = Cesium.Color.RED.withAlpha(0.5);
+    count = 0;
+
+}
+window["ab" + str2].description = '\
+<p>\
+  ' + roomname + ' \
+</p>\
+  <a style="color: WHITE"\
+    target="_blank"\
+   <ul>\
+     <li><a href="/rooms?roomID='+ str2 +'" target="_top">OPEN</a></li>\
+  </ul></p>\
+<p>\
+<p>\
+</p>\
+<p>\
+</p>\
+<p>\
+</p>\
+<p>\
+</p>';
+
+viewer.infoBox.frame.removeAttribute('sandbox');
+    {%endfor%}
+
+
+
+//Design the Floor pan.
+
+//29.72631, -95.34252
+
+var heading = Cesium.Math.toRadians(90);
+var pitch = Cesium.Math.toRadians(-40);
+viewer.zoomTo(window["ab" + str2], new Cesium.HeadingPitchRange(heading, pitch,200));
+
+
+ellipse = window["ab" + str2].polygon
+//ellipse.material = "{% static 'css/img/a.jpg' %}";
+//rooms.polygon.height = 15;
+
+ellipse.polygon.extrudedHeight = 0;
+
+
+
+
+
+
+
+
+
+
+
+function GoHome(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/");
+}
+
+function GD(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/graphics");
+}
+
+
+
+function SCat(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/objects");
+}
+function DD(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/");
+}
+function AS(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/advancedsearch");
+}
+function PT(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/");
+}
+
+
+
+/*var rooms = viewer.entities.add({
+  name : 'rooms',
   polygon : {
     hierarchy : Cesium.Cartesian3.fromDegreesArray([
-                              -109.080842,45.002073,
-                              -105.91517,45.002073,
-                              -104.058488,44.996596,
-                              -104.053011,43.002989,
-                              -104.053011,41.003906,
-                              -105.728954,40.998429,
-                              -107.919731,41.003906,
-                              -109.04798,40.998429,
-                              -111.047063,40.998429,
-                              -111.047063,42.000709,
-                              -111.047063,44.476286,
-                              -111.05254,45.002073]),
-    material : Cesium.Color.RED.withAlpha(0.5),
+                            {% for rooms in rooms %}
+                             '{{ rooms.st_X }}','{{ rooms.st_Y }}',
+                              {% endfor %} 
+
+                              ]),
+    material : Cesium.Color.BLUE.withAlpha(0.5),
     outline : true,
     outlineColor : Cesium.Color.BLACK
   }
 });
-var ellipse = wyoming.polygon;
-ellipse.material = "{% static 'css/img/a.jpg' %}";
 
-viewer.zoomTo(wyoming);
-ellipse.polygon.extrudedHeight = 50;
+*/
 
 
 
@@ -166,5 +316,49 @@ wyoming.polygon.extrudedHeight = 50;*/
 
 
   </script>
+  <style type="text/css">
+#controlPanel {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: rgba(42, 42, 42, 0.8);
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+
+
+label {
+  cursor: pointer;
+}
+label:hover span {
+  text-decoration: underline;
+}
+#home {
+    width: 15em;  height: 2em;
+    text-align: left;
+
+}
+#scat {
+    width: 15em;  height: 2em;
+    text-align: left;
+
+}
+#dd {
+    width: 15em;  height: 2em;
+    text-align: left;
+
+}
+#as {
+    width: 15em;  height: 2em;
+    text-align: left;
+}
+#pt {
+    width: 15em;  height: 2em;
+    text-align: left;
+}
+
+
+
+  </style>
 </body>
 </html>

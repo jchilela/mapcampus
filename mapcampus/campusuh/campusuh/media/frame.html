@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body bgcolor="white">
+
+<h3>A demonstration of how to access an IFRAME element</h3>
+
+<iframe id="myFrame" src="/default.asp"></iframe>
+
+<p>Click the button to get the URL of the iframe.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+    var x = document.getElementById("myFrame").src;
+    document.getElementById("demo").innerHTML = x;
+}
+</script>
+
+</body>
+</html>
