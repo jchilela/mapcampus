@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db import connection
 from django.http import  HttpResponse,HttpResponseRedirect
 from .models import ObjectsType, Users, Objects, Camera, Servers, MapSettings, Buildings, Floors, \
-    Rooms
+    Rooms,VGI
 from .forms import *
 import json
 
@@ -265,6 +265,95 @@ def ssh(request):
 def sshmain(request):
     template = 'chrome-extension://pnhechapfaindjhompbnflcldabbghjo/html/nassh.html'
     return render(request,template)
+
+#______________________VGI_________________________________________
+def get_typeOfObjects_vgi():
+    con = connection.cursor()
+    con.execute('SELECT id, "Type_VGI" FROM public.campusuhapp_vgi_type')
+    return dictfetchall(con)
+
+
+
+
+def get_objects_per_type_vgi(search):
+    query = connection.cursor()
+    query.execute('SELECT id, "Type_VGI_id", "Description" , "User_ID", "Picture","MaterialColor", "latitude", "longitude", st_X(location) as x ,st_Y(location) as y FROM campusuhapp_vgi where "Type_VGI_id"= %s',(str(search),));
+    return dictfetchall(query)
+
+
+
+def get_all_similar_elements_vgi(vector):
+    a = {}
+    b = []
+    objects_list = []
+    objects_temp = {}
+    for i in range(len(vector)):
+        a['Type_VGI'] = vector[i]['Type_VGI']
+        a['id'] = vector[i]['id']
+        temp= get_objects_per_type_vgi(vector[i]['id'])
+        objects_list.append(temp)
+        b.append(a)
+        a={}
+    return b,objects_list
+
+
+
+
+
+def vgi(request):
+    if request.method == 'POST':
+        print "\n\n\n\n\n entra"
+        form = ObjectsSearch(request.POST)
+        if form.is_valid():
+            search = form.cleaned_data['search']
+            
+            return HttpResponseRedirect('/home/')
+    else:
+        template = 'vgi.html'
+        typeOfObjects= get_typeOfObjects_vgi()
+        objects,objects_list = get_all_similar_elements_vgi(typeOfObjects)
+        return render(request,template,{'objects':objects,'objects_list':objects_list})
+
+#________________________Sensors_________________________
+def get_objects_per_type_sensors(search):
+    query = connection.cursor()
+    query.execute('SELECT campusuhapp_objects.id, campusuhapp_objectstype."TypeObj", campusuhapp_objects."Buildings_id", campusuhapp_objects."Rooms_id", campusuhapp_objects."TypeObj_id", campusuhapp_objects."Name", campusuhapp_objects."Description", campusuhapp_objects.url, campusuhapp_objects."Value", campusuhapp_objects."UserId_id", campusuhapp_objects."Floors", campusuhapp_objects."Picture", campusuhapp_objects."MaterialImage",campusuhapp_objects."MaterialColor", campusuhapp_objects."latitude", campusuhapp_objects."longitude", campusuhapp_objects."Ip", campusuhapp_objects."UserName",campusuhapp_objects."Password", campusuhapp_objects."Port", campusuhapp_objects."Date", st_X(campusuhapp_objects.location) as x ,st_Y(campusuhapp_objects.location) as y FROM public.campusuhapp_objects, public.campusuhapp_objectstype WHERE campusuhapp_objects."TypeObj_id" = campusuhapp_objectstype.id and campusuhapp_objectstype."TypeObj"=%s',(str(search),));
+    return dictfetchall(query)
+
+
+
+def get_all_similar_elements_Sensor(vector):
+    a = {}
+    b = []
+    objects_list = []
+    objects_temp = {}
+    for i in range(len(vector)):
+        a['TypeObj'] = vector[i]['TypeObj']
+        a['id'] = vector[i]['id']
+        temp= get_objects_per_type_sensors(vector[i]['id'])
+        objects_list.append(temp)
+        b.append(a)
+        a={}
+    return b,objects_list
+
+
+
+
+def sensors(request):
+    template = 'sensors.html'
+    typeOfObjects= get_objects_per_type_sensors("Sensor")
+    print typeOfObjects
+    return render(request,template,{'objects':typeOfObjects})
+
+
+
+
+
+
+
+
+
+
 
 
 

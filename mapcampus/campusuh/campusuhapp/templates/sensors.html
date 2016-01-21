@@ -1,0 +1,115 @@
+{% load staticfiles %}
+{% load my_filters %}
+<html><body>
+<ul class="nav nav-pills">
+  <li role="presentation" class="active"><a href="/">Home</a></li>
+  <li role="presentation"><a href="/sensors">Refresh</a></li>
+</ul>
+<div id="map-div" style="width:100%;height:100%;"></div>
+<!-- Using City of Windsor Open Data : http://www.citywindsor.ca/003713.asp -->
+
+<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <script src="{% static 'js/Cesium.js' %}"></script>
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script>
+map = new OpenLayers.Map({
+     div: "map-div",
+    projection: new OpenLayers.Projection('EPSG:900913'),
+     'displayProjection': new OpenLayers.Projection('EPSG:4326'),
+      minZoom: 0
+
+ });
+
+var osm = new OpenLayers.Layer.OSM();
+ map.addLayer(osm);
+ 
+var long = -95.3428812427905 ;
+ var lat =    29.7221148230814;
+var centerlonlat = new OpenLayers.LonLat( long , lat );
+ 
+centerlonlat=centerlonlat.transform(map.displayProjection, map.projection);
+ var zoom = 17;
+
+map.setCenter(centerlonlat,zoom);
+ 
+// Step 1: Create new layerstyle : vector
+layerStyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+ 
+// Step 2: Create new pointlayer (for all points)
+  pointLayer = new OpenLayers.Layer.Vector("Layer Name", {style: layerStyle});
+ 
+// Step 3: Add pointlayer to map 
+  map.addLayer(pointLayer);
+ 
+// Step 4: Create new sample style for several points
+
+
+     
+                      {%for Objec in objects%}
+// Bridgeview
+ myPoint = new OpenLayers.Geometry.Point(parseFloat('{{Objec.x}}') , parseFloat('{{Objec.y}}')).transform( map.displayProjection,  map.projection);
+ 
+var sampleStyle = OpenLayers.Util.extend({}, layerStyle);
+        sampleStyle.externalGraphic ="https://s-media-cache-ak0.pinimg.com/originals/f1/7f/c1/f17fc155cd2647f830f0c9dcfe17bd5d.gif";
+        sampleStyle.pointRadius = 18;
+        sampleStyle.fillOpacity = 1;  // from 0 (transparent) to 1 (opaque)
+ 
+myPointFeature = new OpenLayers.Feature.Vector( myPoint,null,sampleStyle);
+ // set up smart properties before adding myPointFeature to the map
+myPointFeature.attributes = {
+     name: "{{Objec.Name}}: {{Objec.Value}} Fahrenheit",
+    description: "{{Objec.Description}}",
+     wikiPage: "https://en.wikipedia.org/wiki/Sensor"
+ };
+pointLayer.addFeatures( [ myPointFeature ] );
+
+ {%endfor%}
+ 
+ 
+
+
+// create a Control that watches for clicking on a feature
+selectControl = new OpenLayers.Control.SelectFeature( pointLayer );
+ map.addControl(selectControl);
+ selectControl.activate();
+ 
+// it calls events (featureselected and featureunselected) and we connect those events to functions
+pointLayer.events.on({
+     'featureselected': onFeatureSelect,
+    'featureunselected': onFeatureUnselect
+ });
+
+
+// sample (and super-effective) popup opening and closing code
+ // from http://openlayers.org/dev/examples/ and http://ushahidi.com/
+function onFeatureSelect(clickInfo) {
+         clickedFeature = clickInfo.feature;
+         popup = new OpenLayers.Popup.FramedCloud(
+                 "featurePopup",
+                clickedFeature.geometry.getBounds().getCenterLonLat(),
+                 new OpenLayers.Size(120,250),
+             "<a target='_blank' href='" + clickedFeature.attributes.wikiPage + "'>" + clickedFeature.attributes.name + "</a><br>" + clickedFeature.attributes.description,
+                 null,
+                true,
+                 onPopupClose
+        );
+        clickedFeature.popup = popup;
+         popup.feature = clickedFeature;
+         map.addPopup(popup);
+ }
+function onFeatureUnselect(clickInfo) {
+         feature = clickInfo.feature;
+         if (feature.popup) {
+                 popup.feature = null;
+                 map.removePopup(feature.popup);
+                 feature.popup.destroy();
+                 feature.popup = null;
+         }
+}
+function onPopupClose(closeInfo) {
+         selectControl.unselect(this.feature);
+ }
+  </script>
+
+</body></html>

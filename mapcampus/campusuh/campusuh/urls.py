@@ -17,8 +17,8 @@ urlpatterns = [
     url(r'^graphics', 'campusuhapp.views.graphics', name='graphics'),
     url(r'^sshmain', 'campusuhapp.views.sshmain', name='sshmain'),
     url(r'^ssh', 'campusuhapp.views.ssh', name='ssh'),
-    
-
+    url(r'^vgi', 'campusuhapp.views.vgi', name='vgi'),
+    url(r'^sensors', 'campusuhapp.views.sensors', name='sensors'),
 
 
     

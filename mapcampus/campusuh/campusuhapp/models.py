@@ -11,6 +11,7 @@ class ObjectsType(models.Model):
         return unicode(self.TypeObj)
 
 
+
 class Users(models.Model):
     Name = models.CharField(max_length=100)
     UserName = models.CharField(max_length=100, null=True, blank=True)
@@ -209,6 +210,43 @@ class GeoModelAdmin(admin.GeoModelAdmin):
     admin.GeoModelAdmin.default_lat = 80.52
     admin.GeoModelAdmin.map_template = 'admin/openlayers.html'
     admin.GeoModelAdmin.openlayers_url= 'http://dev.openlayers.org/OpenLayers.js'
+
+
+
+
+
+
+#--------------------VOLUNTEERS GEOGRAPHIC INFORMATION--------------------------------------------------
+
+class VGI_Type(models.Model):
+    Type_VGI = models.CharField(max_length=50, null=True, blank=True)
+    def __unicode__(self):
+        return unicode(self.Type_VGI)
+
+#_______________________SAVE VGI FROM MOBILE DEVICES____________________________________________________
+class VGI(models.Model):
+    Type_VGI = models.ForeignKey(VGI_Type)
+    Description = models.CharField(max_length=5000, null=True, blank=True)
+    User_ID = models.CharField(max_length=45, null=True,
+                                blank=True)  # TO ACTIVATE, DEACTIVATE, OR CHANGE THE VALUE OF OBJECT WE NEED TO INSERT THE OBJECT PASSWORD. Imagine someone switching off your Conditional Air!.. :)
+    # As Entity.
+    Picture = models.ImageField(upload_to='fotos/%Y/%m/%d', null=True, blank=True)  # Pop-Up image
+    MaterialColor = models.CharField(max_length=45, null=True, blank=True, help_text='Press "Tab" to refresh the map')
+    Date = models.DateTimeField(auto_now_add=True, blank=True)
+    location = models.PointField(null=True, blank=True)
+    latitude = models.CharField(max_length=45, null=True, blank=True)
+    longitude = models.CharField(max_length=45, null=True, blank=True)
+    #IF IS A RASPBERRYPI:
+    objects = models.GeoManager()
+    def __unicode__(self):
+        return unicode(self.Description)
+
+
+
+
+
+
+
 
 
 

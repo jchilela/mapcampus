@@ -1,7 +1,7 @@
 from django.conf import settings 
 from django.contrib.gis import admin 
 from django.contrib.gis.geos import GEOSGeometry
-from .models import ObjectsType,Users,Objects,Camera,Servers,MapSettings,Buildings,Floors,Rooms,GeoModelAdmin
+from .models import ObjectsType,Users,Objects,Camera,Servers,MapSettings,Buildings,Floors,Rooms,GeoModelAdmin,VGI_Type,VGI
 
 class RoomsAdmin(admin.OSMGeoAdmin):
 	#fields = ('RoomName', 'url','geometry')
@@ -47,3 +47,7 @@ admin.site.register(MapSettings,admin.OSMGeoAdmin)
 admin.site.register(Buildings,GoogleAdmin)
 admin.site.register(Floors,admin.OSMGeoAdmin)
 admin.site.register(Rooms,RoomsAdmin)
+admin.site.register(VGI_Type,admin.OSMGeoAdmin)
+admin.site.register(VGI,GoogleAdmin)
+
+

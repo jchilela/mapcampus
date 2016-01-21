@@ -39,7 +39,11 @@
   <center><font size="4" color="white"> Quick menu</font></center><br/>
    <label> 
     <p><button id="home" class="cesium-button" onclick="GoHome();">Home</button></p>
-    <p><button id="scat" class="cesium-button" onclick="SCat();">See Info Categorized</button></p>
+    <p><button id="scat" class="cesium-button" onclick="SCat();">See Devices Categorized</button></p>
+    <p><button id="vgi" class="cesium-button" onclick="VGI();">Vol. Geog. Information</button></p>
+    <p><button id="sensors" class="cesium-button" onclick="SENSORS();">Sensors</button></p>
+
+
     <p><button id="dd" class="cesium-button" onclick="DD();">Devices Damaged</button></p>  <!--  It will show devices that are not
     sending data to the website about 20 min -->
     <p><button id="pt" class="cesium-button" onclick="PT();">Public Transportation</button></p>
@@ -146,6 +150,11 @@ function GD(){
   window.location.replace("/graphics");
 }
 
+function VGI(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/vgi");
+}
+
 function ADMIN(){
   //document.getElementById('controlPanel2').style.visibility = 'visible'
   window.location.replace("/admin");
@@ -162,6 +171,10 @@ function DD(){
 function AS(){
   //document.getElementById('controlPanel2').style.visibility = 'visible'
   window.location.replace("/advancedsearch");
+}
+function SENSORS(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/sensors");
 }
 function PT(){
   //document.getElementById('controlPanel2').style.visibility = 'visible'
@@ -228,11 +241,23 @@ wyoming.polygon.extrudedHeight = 50;*/
     text-align: left;
 
 }
+#sensors {
+    width: 15em;  height: 2em;
+    text-align: left;
+
+}
 #scat {
     width: 15em;  height: 2em;
     text-align: left;
 
 }
+#vgi {
+    width: 15em;  height: 2em;
+    text-align: left;
+
+}
+
+
 #dd {
     width: 15em;  height: 2em;
     text-align: left;
