@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^ssh', 'campusuhapp.views.ssh', name='ssh'),
     url(r'^vgi', 'campusuhapp.views.vgi', name='vgi'),
     url(r'^sensors', 'campusuhapp.views.sensors', name='sensors'),
+    url(r'^alerts', 'campusuhapp.views.alerts', name='alerts'),
+
 
 
     

@@ -351,6 +351,55 @@ def sensors(request):
 
 
 
+#____________________________ALERT when the value is equal  or less than, equal or more than_________________________
+
+
+
+def get_objects_per_type_sensors_alert(search):
+    Alert_temp_when = 40
+    Alert_humidity_when = 40
+    Alert_co2_When = 60
+    Alert_light_when = 2
+    Alert_radiation_When =1
+    Alert_sound_When =1
+    Alert_resistence_when =1 
+    Alert_moviment_when = 1
+    Alert_proximity_when =1
+
+    query = connection.cursor()
+    query.execute('SELECT campusuhapp_objects.id, campusuhapp_objectstype."TypeObj", campusuhapp_objects."Buildings_id", campusuhapp_objects."Rooms_id", campusuhapp_objects."TypeObj_id", campusuhapp_objects."Name", campusuhapp_objects."Description", campusuhapp_objects.url, campusuhapp_objects."Value", campusuhapp_objects."UserId_id", campusuhapp_objects."Floors", campusuhapp_objects."Picture", campusuhapp_objects."MaterialImage",campusuhapp_objects."MaterialColor", campusuhapp_objects."latitude", campusuhapp_objects."longitude", campusuhapp_objects."Ip", campusuhapp_objects."UserName",campusuhapp_objects."Password", campusuhapp_objects."Port", campusuhapp_objects."Date", st_X(campusuhapp_objects.location) as x ,st_Y(campusuhapp_objects.location) as y FROM public.campusuhapp_objects, public.campusuhapp_objectstype WHERE campusuhapp_objects."TypeObj_id" = campusuhapp_objectstype.id and campusuhapp_objectstype."TypeObj"=%s',(str(search),));
+    return dictfetchall(query)
+
+
+
+def get_all_similar_elements_Sensor_alert(vector):
+    a = {}
+    b = []
+    objects_list = []
+    objects_temp = {}
+    for i in range(len(vector)):
+        a['TypeObj'] = vector[i]['TypeObj']
+        a['id'] = vector[i]['id']
+        temp= get_objects_per_type_sensors_alert(vector[i]['id'])
+        objects_list.append(temp)
+        b.append(a)
+        a={}
+    return b,objects_list
+
+
+
+
+def alerts(request):
+    template = 'alerts.html'
+    typeOfObjects= get_objects_per_type_sensors_alert("Sensor")
+    print typeOfObjects
+    return render(request,template,{'objects':typeOfObjects})
+
+
+
+
+
+
 
 
 

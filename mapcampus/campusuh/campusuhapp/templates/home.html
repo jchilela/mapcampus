@@ -42,6 +42,7 @@
     <p><button id="scat" class="cesium-button" onclick="SCat();">See Devices Categorized</button></p>
     <p><button id="vgi" class="cesium-button" onclick="VGI();">Vol. Geog. Information</button></p>
     <p><button id="sensors" class="cesium-button" onclick="SENSORS();">Sensors</button></p>
+    <p><button id="sensors" class="cesium-button" onclick="SENSORS_ALERT();">Alerts</button></p>
     <p><button id="pt" class="cesium-button" onclick="PT();">Public Transportation</button></p>
     <p><button id="pt" class="cesium-button" onclick="PT();">Public Informations</button></p>
     <p><button id="pt" class="cesium-button" onclick="GD();">Graphics Dashboards</button></p>
@@ -170,6 +171,11 @@ function SENSORS(){
   //document.getElementById('controlPanel2').style.visibility = 'visible'
   window.location.replace("/sensors");
 }
+function SENSORS_ALERT(){
+  //document.getElementById('controlPanel2').style.visibility = 'visible'
+  window.location.replace("/alerts");
+}
+
 function PT(){
   //document.getElementById('controlPanel2').style.visibility = 'visible'
   window.location.replace("/");
